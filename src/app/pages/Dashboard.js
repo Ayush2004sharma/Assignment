@@ -1,20 +1,20 @@
 "use client";
-import { useMemo } from "react"; // Performance ke liye
+import { useMemo } from "react";
 import SummaryCard from "../components/SummaryCard";
 import BalanceLineChart from "../components/Charts/LineChart";
 import SpendingPieChart from "../components/Charts/PieChart";
 import { LayoutDashboard, Calendar, ArrowUpRight } from "lucide-react";
+import { exportToCSV, exportToJSON } from "../lib/export";
 
 export default function Dashboard({ transactions = [] }) {
   
-  // 1. Memoized Calculations: Taaki har click pe poora loop na chale
+  // 1. Memoized Calculations (Pure logic)
   const { income, expenses, balance, lineData, pieData } = useMemo(() => {
     let runningBalance = 0;
     let totalIncome = 0;
     let totalExpenses = 0;
     const categoryMap = {};
 
-    // Ek hi loop mein saara data process karo (O(n) complexity) - Super Fast!
     const lData = transactions.map((t) => {
       const amt = Number(t.amount) || 0;
       
@@ -24,7 +24,6 @@ export default function Dashboard({ transactions = [] }) {
       } else {
         totalExpenses += amt;
         runningBalance -= amt;
-        // Pie chart ke liye categories map karo
         categoryMap[t.category] = (categoryMap[t.category] || 0) + amt;
       }
 
@@ -48,10 +47,20 @@ export default function Dashboard({ transactions = [] }) {
     };
   }, [transactions]);
 
+  // 2. Export Handler (Moved outside useMemo)
+  const handleExport = (type) => {
+    const today = new Date().toISOString().split("T")[0];
+    if (type === "csv") {
+      exportToCSV(transactions, `financely-${today}.csv`);
+    } else {
+      exportToJSON(transactions, `financely-${today}.json`);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#f8f9fc] p-4 md:p-8 lg:p-10 space-y-10">
       
-      {/* Header: Title and Quick Action */}
+      {/* Header */}
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-1">
           <div className="flex items-center gap-2 text-indigo-600">
@@ -66,32 +75,48 @@ export default function Dashboard({ transactions = [] }) {
             <Calendar className="w-4 h-4 text-gray-400" />
             <span className="text-sm font-bold text-gray-600">March 2026</span>
           </div>
-          
+
+          {/* Export Dropdown */}
+          <div className="relative group">
+            <button className="bg-gray-900 text-white px-5 py-2.5 rounded-2xl text-sm font-bold hover:bg-indigo-600 transition-all flex items-center gap-2 shadow-lg shadow-gray-200">
+              Export <ArrowUpRight className="w-4 h-4" />
+            </button>
+
+            {/* Dropdown Menu */}
+            <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 group-hover:opacity-100 transition-all invisible group-hover:visible z-50 overflow-hidden">
+              <button
+                onClick={() => handleExport("csv")}
+                className="w-full text-left px-4 py-3 text-sm font-medium text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors border-b border-gray-50"
+              >
+                Export as CSV
+              </button>
+              <button
+                onClick={() => handleExport("json")}
+                className="w-full text-left px-4 py-3 text-sm font-medium text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors"
+              >
+                Export as JSON
+              </button>
+            </div>
+          </div>
         </div>
       </header>
 
-      {/* Stats Grid */}
+      {/* Stats Cards */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <SummaryCard title="Current Balance" value={balance} type="balance" />
         <SummaryCard title="Total Earnings" value={income} type="income" />
         <SummaryCard title="Monthly Spends" value={expenses} type="expense" />
       </section>
 
-      {/* Main Insights Grid */}
+      {/* Charts Section */}
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Balance Curve */}
-        <div className="lg:col-span-8 bg-white p-2 rounded-[32px] shadow-sm border border-gray-50">
+        <div className="lg:col-span-8 bg-white p-4 rounded-[32px] shadow-sm border border-gray-50 min-h-[400px]">
           <BalanceLineChart data={lineData} />
         </div>
-        
-        {/* Category Share */}
-        <div className="lg:col-span-4 bg-white p-2 rounded-[32px] shadow-sm border border-gray-50">
+        <div className="lg:col-span-4 bg-white p-4 rounded-[32px] shadow-sm border border-gray-50 min-h-[400px]">
           <SpendingPieChart data={pieData} />
         </div>
       </section>
-
-      
-    
     </div>
   );
 }

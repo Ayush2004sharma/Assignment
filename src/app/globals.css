@@ -1,2 +1,10 @@
 @import "tailwindcss";
 
+@theme {
+  --dark-mode: class;
+}
+
+/* Base styles for smooth transition */
+body {
+  @apply transition-colors duration-300;
+}
