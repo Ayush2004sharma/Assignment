@@ -37,7 +37,7 @@ export default function App() {
 
       {/* --- Content Area --- */}
       {/* pb-32 is important to avoid overlap with floating mobile nav */}
-      <main className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12 pb-32 md:pb-12">
+      <main className="max-w-7xl mx-auto px-4 md:px-8 pt-4 md:pt-6 pb-32 md:pb-12">
         <AnimatePresence mode="wait">
           <motion.div
             key={page}

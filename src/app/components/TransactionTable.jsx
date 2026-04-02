@@ -1,5 +1,5 @@
 "use client";
-import { Trash2, ArrowUpCircle, ArrowDownCircle, Calendar, Tag } from "lucide-react";
+import { Trash2, ArrowUpCircle, ArrowDownCircle, Calendar, Tag ,LayoutGrid} from "lucide-react";
 
 export default function TransactionTable({ transactions, role, onDelete }) {
   const isAdmin = role === "admin";

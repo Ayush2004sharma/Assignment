@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
-import { PlusCircle, Calendar, Tag, DollarSign } from "lucide-react"; // Install lucide-react if you haven't
 
+import { IndianRupee, Calendar, Tag, PlusCircle } from "lucide-react";
 export default function AddTransaction({ onAdd }) {
   const [form, setForm] = useState({
     date: "",
@@ -43,19 +43,25 @@ export default function AddTransaction({ onAdd }) {
 
         {/* Amount Input */}
         <div className="relative">
-          <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1 block ml-1">Amount</label>
-          <div className="relative">
-            <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input
-              type="number"
-              placeholder="0.00"
-              value={form.amount}
-              onChange={(e) => setForm({ ...form, amount: e.target.value })}
-              className="w-full pl-10 pr-4 py-3 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:bg-white transition-all outline-none text-sm text-gray-700 font-semibold"
-              required
-            />
-          </div>
-        </div>
+  {/* Label */}
+  <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1 block ml-1">
+    Amount (INR)
+  </label>
+  
+  <div className="relative">
+    {/* Rupee Icon - IndianRupee import kar lena lucide-react se */}
+    <IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+    
+    <input
+      type="number"
+      placeholder="0.00"
+      value={form.amount}
+      onChange={(e) => setForm({ ...form, amount: e.target.value })}
+      className="w-full pl-10 pr-4 py-3 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:bg-white transition-all outline-none text-sm text-gray-700 font-semibold"
+      required
+    />
+  </div>
+</div>
 
         {/* Category Input */}
         <div className="relative">
