@@ -2,10 +2,13 @@
 import { Lightbulb, TrendingUp, AlertCircle, ArrowRight } from "lucide-react";
 
 export default function Insights({ transactions }) {
+  // Empty State Update
   if (!transactions.length) {
     return (
-      <div className="bg-gray-50/50 border-2 border-dashed border-gray-100 rounded-[28px] p-8 text-center">
-        <p className="text-gray-400 font-medium italic">No insights to display yet. Add some data!</p>
+      <div className="bg-gray-50/50 dark:bg-gray-900/50 border-2 border-dashed border-gray-100 dark:border-gray-800 rounded-[28px] p-8 text-center transition-colors">
+        <p className="text-gray-400 dark:text-gray-600 font-medium italic">
+          No insights to display yet. Add some data!
+        </p>
       </div>
     );
   }
@@ -31,12 +34,16 @@ export default function Insights({ transactions }) {
   const percentage = Math.round((highestAmount / totalSpent) * 100);
 
   return (
-    <div className="bg-gradient-to-br from-gray-900 to-gray-800 p-8 rounded-[32px] shadow-xl text-white relative overflow-hidden group">
+    /* Container Update: 
+       Light mode mein indigo gradient aur Dark mode mein gray/black gradient 
+    */
+    <div className="bg-gradient-to-br from-indigo-900 to-indigo-950 dark:from-gray-900 dark:to-black p-8 rounded-[32px] shadow-xl text-white relative overflow-hidden group transition-all duration-500">
+      
       {/* Decorative Glow Effect */}
-      <div className="absolute -top-24 -right-24 w-48 h-48 bg-indigo-500/20 blur-[80px] rounded-full group-hover:bg-indigo-500/30 transition-colors" />
+      <div className="absolute -top-24 -right-24 w-48 h-48 bg-indigo-500/20 dark:bg-indigo-600/10 blur-[80px] rounded-full group-hover:bg-indigo-500/30 transition-colors" />
 
       <div className="flex items-center gap-3 mb-6">
-        <div className="p-2.5 bg-white/10 backdrop-blur-md rounded-xl">
+        <div className="p-2.5 bg-white/10 backdrop-blur-md rounded-xl border border-white/10">
           <Lightbulb className="w-5 h-5 text-amber-400" />
         </div>
         <h3 className="text-lg font-bold tracking-tight">Smart Insights</h3>
@@ -44,10 +51,10 @@ export default function Insights({ transactions }) {
 
       <div className="space-y-6">
         {/* Main Insight Card */}
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-5 backdrop-blur-sm">
+        <div className="bg-white/5 dark:bg-gray-800/20 border border-white/10 dark:border-gray-700/30 rounded-2xl p-5 backdrop-blur-sm">
           <div className="flex justify-between items-start mb-4">
             <div>
-              <p className="text-gray-400 text-xs font-medium uppercase tracking-widest mb-1">
+              <p className="text-indigo-200/60 dark:text-gray-500 text-[10px] font-bold uppercase tracking-[0.2em] mb-1">
                 Highest Spending
               </p>
               <h4 className="text-2xl font-bold text-white capitalize">{highestCategory}</h4>
@@ -60,10 +67,10 @@ export default function Insights({ transactions }) {
           {/* Progress Bar */}
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-gray-400">Share of total budget</span>
-              <span className="font-mono font-bold text-indigo-300">{percentage}%</span>
+              <span className="text-indigo-200/60 dark:text-gray-400">Share of total budget</span>
+              <span className="font-mono font-bold text-indigo-300 dark:text-indigo-400">{percentage}%</span>
             </div>
-            <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+            <div className="h-2 bg-white/10 dark:bg-gray-800 rounded-full overflow-hidden">
               <div 
                 className={`h-full rounded-full transition-all duration-1000 ease-out ${percentage > 50 ? 'bg-rose-500' : 'bg-indigo-500'}`}
                 style={{ width: `${percentage}%` }}
@@ -73,7 +80,7 @@ export default function Insights({ transactions }) {
         </div>
 
         {/* Actionable Tip */}
-        <button className="w-full flex items-center justify-between group/btn text-sm font-medium text-gray-300 hover:text-white transition-colors">
+        <button className="w-full flex items-center justify-between group/btn text-sm font-medium text-indigo-100/70 dark:text-gray-400 hover:text-white transition-colors">
           <span>View optimization tips</span>
           <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
         </button>

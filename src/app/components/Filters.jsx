@@ -1,9 +1,9 @@
 "use client";
-import { Search, Calendar, ArrowUpCircle, ArrowDownCircle, LayoutGrid, Filter } from "lucide-react";
+import { Search, Calendar, ArrowUpCircle, ArrowDownCircle, LayoutGrid } from "lucide-react";
 
 export default function Filters({ search, setSearch, type, setType, dateFilter, setDateFilter }) {
   const types = [
-    { id: "", label: "All", icon: LayoutGrid, color: "text-gray-500" },
+    { id: "", label: "All", icon: LayoutGrid, color: "text-gray-500 dark:text-gray-400" },
     { id: "income", label: "Income", icon: ArrowUpCircle, color: "text-emerald-500" },
     { id: "expense", label: "Expense", icon: ArrowDownCircle, color: "text-rose-500" },
   ];
@@ -12,13 +12,14 @@ export default function Filters({ search, setSearch, type, setType, dateFilter, 
     <div className="flex flex-col lg:flex-row items-center gap-4 mb-8">
       {/* 1. Universal Search */}
       <div className="relative w-full lg:w-1/3 group">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-indigo-500" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
         <input
           type="text"
           placeholder="Search any detail..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-10 pr-4 py-3 bg-white border border-gray-100 rounded-2xl shadow-sm focus:ring-4 focus:ring-indigo-500/10 outline-none text-sm"
+          // Added dark:bg-gray-900, dark:border-gray-800, dark:text-white
+          className="w-full pl-10 pr-4 py-3 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl shadow-sm focus:ring-4 focus:ring-indigo-500/10 outline-none text-sm text-gray-900 dark:text-white transition-all placeholder:text-gray-400 dark:placeholder:text-gray-600"
         />
       </div>
 
@@ -29,20 +30,21 @@ export default function Filters({ search, setSearch, type, setType, dateFilter, 
           type="date"
           value={dateFilter}
           onChange={(e) => setDateFilter(e.target.value)}
-          className="w-full pl-10 pr-4 py-3 bg-white border border-gray-100 rounded-2xl shadow-sm focus:ring-4 focus:ring-indigo-500/10 outline-none text-sm text-gray-600"
+          // Added dark:color-scheme-dark (This fixes the calendar popup theme)
+          className="w-full pl-10 pr-4 py-3 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl shadow-sm focus:ring-4 focus:ring-indigo-500/10 outline-none text-sm text-gray-600 dark:text-gray-300 [color-scheme:light] dark:[color-scheme:dark]"
         />
         {dateFilter && (
           <button 
             onClick={() => setDateFilter("")}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-gray-400 hover:text-indigo-600 font-bold"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 font-bold"
           >
             Clear
           </button>
         )}
       </div>
 
-      {/* 3. Type Toggle */}
-      <div className="flex bg-gray-100/50 p-1 rounded-2xl w-full lg:w-auto overflow-x-auto">
+      {/* 3. Type Toggle Container */}
+      <div className="flex bg-gray-100/50 dark:bg-gray-800/50 p-1 rounded-2xl w-full lg:w-auto overflow-x-auto border border-transparent dark:border-gray-800">
         {types.map((t) => {
           const Icon = t.icon;
           const isActive = type === t.id;
@@ -51,10 +53,12 @@ export default function Filters({ search, setSearch, type, setType, dateFilter, 
               key={t.id}
               onClick={() => setType(t.id)}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all whitespace-nowrap ${
-                isActive ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"
+                isActive 
+                  ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm" 
+                  : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
               }`}
             >
-              <Icon className={`w-4 h-4 ${isActive ? t.color : "text-gray-400"}`} />
+              <Icon className={`w-4 h-4 ${isActive ? t.color : "text-gray-400 dark:text-gray-600"}`} />
               {t.label}
             </button>
           );

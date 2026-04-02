@@ -1,10 +1,30 @@
 @import "tailwindcss";
 
-@theme {
-  --dark-mode: class;
+/* Dark Mode (Jo humne pehle kiya) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Naya: Coffee Theme */
+@custom-variant coffee (&:where(.coffee, .coffee *));
+
+/* Naya: Cyberpunk Theme */
+@custom-variant cyberpunk (&:where(.cyberpunk, .cyberpunk *));
+
+:root {
+  --bg-main: #f8f9fc;
+  --text-main: #111827;
 }
 
-/* Base styles for smooth transition */
-body {
-  @apply transition-colors duration-300;
+.dark {
+  --bg-main: #030712;
+  --text-main: #ffffff;
+}
+
+.coffee {
+  --bg-main: #3c2a21; /* Dark Brown */
+  --text-main: #e5e5cb; /* Cream Text */
+}
+
+.cyberpunk {
+  --bg-main: #000b1e;
+  --text-main: #00ff41; /* Neon Green */
 }

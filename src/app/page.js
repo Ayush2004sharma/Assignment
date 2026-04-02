@@ -18,38 +18,43 @@ export default function App() {
   const [role, setRole] = useState("viewer");
   const [transactions, setTransactions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  
+  // ✅ FIX: isDark state define kar di (By default light mode)
+  const [isDark, setIsDark] = useState(false);
 
-  // 1. Initial Load from Persistence
-// 1. Initial Load with Fallback Support
+  // Dark Mode Class Toggle Logic
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDark]);
+
+  // Initial Data Load
   useEffect(() => {
     const initData = async () => {
       try {
-        setIsLoading(true);
+        setIsLoading(false); // API call simulate kar rahe hain
         const savedData = await api.getTransactions();
-        
         if (savedData && savedData.length > 0) {
           setTransactions(savedData);
         } else {
-          // Case: API success but no data found (First time user)
           setTransactions(mockTransactions);
           await api.saveTransactions(mockTransactions);
         }
       } catch (error) {
-        // Case: API Response fail (Server down ya error)
-        console.error("API failed, loading mock data instead:", error);
+        console.error("API failed:", error);
         setTransactions(mockTransactions);
       } finally {
         setIsLoading(false);
       }
     };
-    
     initData();
   }, []);
-  // 2. Wrap setTransactions to include persistence
+
   const handleUpdateTransactions = async (newTransactions) => {
-    // Optimistic update (UI changes immediately)
     setTransactions(newTransactions);
-    // Persist to "database"
     await api.saveTransactions(newTransactions);
   };
 
@@ -61,7 +66,7 @@ export default function App() {
 
   if (isLoading) {
     return (
-      <div className="h-screen w-full flex items-center justify-center bg-[#F8FAFC]">
+      <div className="h-screen w-full flex items-center justify-center bg-[#F8FAFC] dark:bg-gray-950">
         <motion.div 
           animate={{ rotate: 360 }} 
           transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
@@ -72,8 +77,19 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] selection:bg-indigo-100 selection:text-indigo-700">
-      <Navbar page={page} setPage={setPage} role={role} setRole={setRole} navItems={navItems} />
+    // Added dark:bg-gray-950 for the main wrapper
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-gray-950 transition-colors duration-300 selection:bg-indigo-100 selection:text-indigo-700">
+      
+      {/* ✅ Navbar ko isDark aur setIsDark pass karna zaroori hai toggle button ke liye */}
+      <Navbar 
+        page={page} 
+        setPage={setPage} 
+        role={role} 
+        setRole={setRole} 
+        navItems={navItems} 
+        isDark={isDark} 
+        setIsDark={setIsDark} 
+      />
 
       <main className="max-w-7xl mx-auto px-4 md:px-8 pt-4 md:pt-6 pb-32 md:pb-12">
         <AnimatePresence mode="wait">
@@ -83,22 +99,26 @@ export default function App() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
           >
-            {page === "dashboard" && <Dashboard transactions={transactions} />}
+            {/* Dashboard mein isDark pass kiya Recharts update karne ke liye */}
+            {page === "dashboard" && (
+              <Dashboard transactions={transactions} isDark={isDark} />
+            )}
             
             {page === "transactions" && (
               <Transactions
                 transactions={transactions}
                 setTransactions={handleUpdateTransactions}
                 role={role}
+                isDark={isDark}
               />
             )}
 
-            {page === "insights" && <InsightsPage transactions={transactions} />}
+            {page === "insights" && (
+              <InsightsPage transactions={transactions} isDark={isDark} />
+            )}
           </motion.div>
         </AnimatePresence>
       </main>
-
-      {/* --- Mobile Nav (Keep your existing code here) --- */}
     </div>
   );
 }
